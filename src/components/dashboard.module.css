@@ -1,0 +1,9 @@
+.dashboard {
+  display: grid;
+  /* place-items: center; */
+  color: white;
+  z-index: 50;
+  position: relative;
+  box-sizing: border-box;
+  /* align-items: center; */
+}
