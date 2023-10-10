@@ -9,11 +9,8 @@ function App() {
 
   return (
     <div className="App">
-      <header>
-        this is the header
-      </header>
       <main>
-        <img src="https://wallpapers.com/images/hd/hd-game-of-thrones-kingdom-banners-q8t63skg9xy96fab.webp"
+        <img src="https://images.alphacoders.com/225/225863.png"
         className="bg-image"/>
         <Dashboard/>
       </main>

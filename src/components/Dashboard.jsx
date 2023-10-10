@@ -1,41 +1,40 @@
 import React, { useState, useEffect } from 'react'
 import styles from './dashboard.module.css'
 import Options from './Options'
+import useFetchData from '../hooks/useFetchData'
+import Characters from './Characters'
+import Books from './Books'
+import Houses from './Houses'
+import Loader from './Loader'
 
 export default function Dashboard() {
-  const [truthy, setTruthy] = useState(false)
-  const [data, setData] = useState(null)
-  const [loading, setLoading] = useState(false)
-  const [error, setError] = useState(null)
+  const [selection, setSelection] = useState(null)
+  const { data, loading, error } = useFetchData(selection)
 
-  const questions = ['books', 'characters', 'houses' ]
-  const apiUrl = 'https://www.anapioficeandfire.com/api'
-
-  function onClickHandler() {
-    setTruthy(!truthy)
+  function onClickHandler(clickedButton) {
+    return () => {
+      setSelection(clickedButton)
+    }
   }
 
-  useEffect(() => {
-    async function fetchData() {
-      const url = apiUrl + '/' + 'books'
-      try {
-        const res = await fetch(url)
-        const jsonData = await res.json()
-        console.log('DATA: ', jsonData)
-        setData(jsonData)
-      } catch(err) {
-        setError(err.message)
-      } finally {
-        setLoading(false)
-      }
-    }
-
-    fetchData()
-  }, [])
+  const dataRender = {
+    'books': <Books data={data} />,
+    'characters': <Characters data={data} />,
+    'houses': <Houses data={data} />,
+  }
 
   return (
     <div className={styles.dashboard}>
-      <Options/>
+      <div className={styles.layout}>
+        <h1 className={styles.title}>GOT INFO</h1>
+        <Options selection={selection} setSelection={onClickHandler} />
+        {loading && (
+          <Loader/>
+        )}
+        {(data && !loading) && (
+          dataRender[selection]
+        )}
+      </div>
     </div>
   )
 }

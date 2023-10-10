@@ -1,0 +1,8 @@
+.booksDashboard {
+  max-height: 75vh;
+  overflow: auto;
+  background: rgba(0,0,0,0.3);
+  color: white;
+  gap: 8px;
+  text-align: center;
+}
