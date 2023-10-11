@@ -5,4 +5,13 @@
   color: white;
   gap: 8px;
   text-align: center;
+  padding: 8px;
+}
+
+.keyVal {
+  margin:  8px;
+}
+
+.keys {
+  font-weight: bold;
 }

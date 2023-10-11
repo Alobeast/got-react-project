@@ -9,25 +9,42 @@ export default function useFetchData(selection) {
 
   useEffect(() => {
     if (!selection) {
-      return
+      return;
     }
-    setLoading(true)
-    async function fetchData() {
-      const url = apiUrl + '/' + selection
+
+    setLoading(true);
+
+    async function fetchData(url) {
       try {
-        const res = await fetch(url)
-        const jsonData = await res.json()
-        console.log('DATA: ', jsonData)
-        setData(jsonData)
+        const res = await fetch(url);
+        const jsonData = await res.json();
+
+        if (res.headers.has('Link')) {
+          const nextPageUrl = res.headers.get('Link').match(/<(.*?)>; rel="next"/);
+          const nextPageExists = nextPageUrl && nextPageUrl.length > 1;
+
+          if (nextPageExists) {
+            const nextPageData = await fetchData(nextPageUrl[1]);
+            jsonData.push(...nextPageData);
+          }
+        }
+
+        return jsonData;
       } catch (err) {
-        setError(err.message)
-      } finally {
-        setLoading(false)
+        setError(err.message);
       }
     }
 
-    fetchData()
-  }, [selection])
+    const fetchAllData = async () => {
+      const initialUrl = `${apiUrl}/${selection}?page=1&pageSize=50`;
+      const allData = await fetchData(initialUrl);
+      setData(allData);
+      setLoading(false);
+    };
 
-  return {data, error, loading}
+    fetchAllData();
+  }, [selection]);
+
+  console.log("AGGREGATED DATA: ", data);
+  return { data, error, loading };
 }
